@@ -6,7 +6,7 @@
 # Step 1:
 # Create dockerpath
 # dockerpath=<your docker ID/path>
-dockerpath=vinusankar/story-generator
+dockerpath=dinu17/story-generator
 
 # Step 2:  
 # Authenticate & tag
@@ -16,7 +16,7 @@ echo "Docker ID and Image: $dockerpath"
 # Step 3:
 # Push image to a docker repository
 
-docker login -u vinusankar
+docker login -u dinu17
 docker tag api $dockerpath:latest
 
 docker push $dockerpath:latest
