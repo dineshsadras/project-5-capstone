@@ -54,7 +54,7 @@ jobs:
           name: Install Docker
           command: |
             yum update -y
-            yum -y install amazon-linux-extras
+            yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
             amazon-linux-extras install docker
             systemctl start docker.service
             docker version
