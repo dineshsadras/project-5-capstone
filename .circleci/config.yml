@@ -54,7 +54,8 @@ jobs:
           name: Install Docker
           command: |
             yum update -y
-            yum install -y docker
+            yum -y install amazon-linux-extras
+            amazon-linux-extras install docker
             systemctl start docker.service
             docker version
       - run:
