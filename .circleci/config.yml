@@ -53,7 +53,8 @@ jobs:
       - run:
           name: Install Docker
           command: |
-            yum install docker
+            yum update -y
+            yum install -y docker
             systemctl start docker.service
             docker version
       - run:
