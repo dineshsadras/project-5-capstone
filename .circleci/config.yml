@@ -52,17 +52,23 @@ jobs:
   build-and-push:
     docker:
     # Use the same Docker base as the project
-      - image: docker:20.10
+      - image: python:3.7-alpine3.11
     steps:
-      - setup_remote_docker:
-          version: 20.10.7
-          docker_layer_caching: true
       - checkout
       - run:
-          name: verify docker version
+          name: Install docker and verify version
           command: |
+            apk add docker-cli
             systemctl start docker.service
-            docker version
+            
+       - setup_remote_docker:
+           version: 20.10.7
+           docker_layer_caching: true
+
+      - run:
+          name: Docker Version check
+          command: docker version
+        
       - run:
           name: Login to Docker Hub
           command: echo "${DOCKERHUB_PASSWORD}" | docker login -u "${DOCKERHUB_USERNAME}" --password-stdin
