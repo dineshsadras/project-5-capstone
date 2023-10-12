@@ -4,6 +4,11 @@
 #
 version: 2
 
+executors:
+  docker-executor:
+    docker:
+      - image: circleci/python:3.8
+
 jobs:
   build:
     docker:
@@ -79,5 +84,4 @@ workflows:
     jobs:
       - build
       - build-and-push:
-          requires: [build]
           context: dockerhub
