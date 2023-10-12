@@ -61,11 +61,13 @@ jobs:
       - run:
           name: Build docker image
           command: |
+            chmod u+x run_docker.sh
             ./run_docker.sh
             docker images | grep "story-generator"
       - run:
           name: push docker image to docker hub
           command: |
+            chmod u+x upload_docker.sh
             ./upload_docker.sh
 
 workflows:
