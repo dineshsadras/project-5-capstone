@@ -55,6 +55,8 @@ jobs:
           command: |
             yum update -y
             amazon-linux-extras install -y docker
+            sudo service docker start
+            docker version
       - run:
           name: Login to Docker Hub
           command: echo "${DOCKERHUB_PASSWORD}" | docker login -u "${DOCKERHUB_USERNAME}" --password-stdin
