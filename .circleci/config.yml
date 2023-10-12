@@ -119,5 +119,4 @@ workflows:
   version: 2
   default:
     jobs:
-      - eks-cluster-nodes:
-          requires: [build-and-push]
+      - eks-cluster-nodes
