@@ -4,6 +4,21 @@
 #
 version: 2
 
+commands:
+  destroy-environment:
+    description: Destroy EKS cluster if the job fails
+    steps:
+      - run:
+          name: Destroy environments
+          when: on_fail
+          command: |
+            echo "Destroying EKS cluster and Network components "
+            cd infrastructure/
+            chmod u+x create-stack.sh   
+
+            sh create-stack.sh delete eks-nodes
+            sh create-stack.sh delete eks
+            sh create-stack.sh delete network
 jobs:
   build:
     docker:
@@ -78,10 +93,31 @@ jobs:
             chmod u+x upload_docker.sh
             ./upload_docker.sh
 
+  eks-cluster-nodes:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Install tar and gzip
+          command: |
+            yum install -y tar
+            yum install -y gzip
+      - run:
+          name: Deploy network, eks cluster and nodes
+          command: |
+            cd infrastructure/
+            chmod u+x create-stack.sh
+            sh create-stack.sh create network
+            sh create-stack.sh create eks
+            sh create-stack.sh create eks-nodes
+
+      
+      - destroy-environment
+
 workflows:
   version: 2
   default:
     jobs:
-      - build
-      - build-and-push:
-          context: dockerhub
+      - eks-cluster-nodes:
+          requires: [build-and-push]
