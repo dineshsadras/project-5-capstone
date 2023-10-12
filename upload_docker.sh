@@ -17,6 +17,6 @@ echo "Docker ID and Image: $dockerpath"
 # Push image to a docker repository
 
 docker login -u dinu17
-docker tag api $dockerpath:latest
+docker tag story-generator $dockerpath:latest
 
 docker push $dockerpath:latest
