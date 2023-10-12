@@ -47,18 +47,12 @@ jobs:
   build-and-push:
     docker:
     # Use the same Docker base as the project
-      - image: amazon/aws-cli
+      - image: docker:20.10
     steps:
       - checkout
       - run:
-          name: Install Docker
-          command: |
-            yum update -y
-            yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-            amazon-linux-extras enable docker
-            amazon-linux-extras install -y docker
-            systemctl start docker.service
-            docker version
+          name: verify docker version
+          command: docker version
       - run:
           name: Login to Docker Hub
           command: echo "${DOCKERHUB_PASSWORD}" | docker login -u "${DOCKERHUB_USERNAME}" --password-stdin
