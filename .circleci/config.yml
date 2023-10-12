@@ -60,8 +60,10 @@ jobs:
           docker_layer_caching: true
       - checkout
       - run:
-          name: Install Docker Compose
-          command: sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose
+          name: Install Docker
+          command: |
+            sudo apt-get update -y
+            sudo apt-get install -y docker-ce
       - run:
           name: Login to Docker Hub
           command: echo "${DOCKERHUB_PASSWORD}" | docker login -u "${DOCKERHUB_USERNAME}" --password-stdin
@@ -76,9 +78,9 @@ jobs:
             ./upload_docker.sh
 
 workflows:
-  version: 2
   default:
     jobs:
       - build
       - build-and-push:
+          requires: [build]
           context: dockerhub
