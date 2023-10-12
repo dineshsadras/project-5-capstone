@@ -78,6 +78,7 @@ jobs:
             ./upload_docker.sh
 
 workflows:
+  version: 2
   default:
     jobs:
       - build
