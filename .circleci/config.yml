@@ -52,7 +52,9 @@ jobs:
       - checkout
       - run:
           name: verify docker version
-          command: docker version
+          command: |
+            service docker start
+            docker version
       - run:
           name: Login to Docker Hub
           command: echo "${DOCKERHUB_PASSWORD}" | docker login -u "${DOCKERHUB_USERNAME}" --password-stdin
