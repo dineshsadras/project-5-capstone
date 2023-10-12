@@ -112,9 +112,6 @@ jobs:
             sh create-stack.sh create eks
             sh create-stack.sh create eks-nodes
 
-      
-      - destroy-environment
-
 workflows:
   version: 2
   default:
