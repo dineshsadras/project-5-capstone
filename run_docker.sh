@@ -11,5 +11,5 @@ docker build --tag=story-generator .
 docker image ls | grep "story-generator"
 
 # Step 3: 
-# Run Nginx hello world app
+# Run story-generator app
 docker run -p 8080:80 story-generator
