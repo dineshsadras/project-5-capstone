@@ -10,7 +10,7 @@ if [[ "$action" =~ ^(create|update)$ ]]; then
         --stack-name $2 \
         --template-body file://stacks/$2.yml \
         --parameters file://parameters/$2.json \
-        --region=eu-west-1 \
+        --region=us-east-1 \
         --capabilities CAPABILITY_NAMED_IAM
     
     echo "Done"
@@ -21,7 +21,7 @@ elif [[ "$action" =~ ^(delete)$ ]]; then
 
     aws cloudformation ${action}-stack \
     --stack-name $2 \
-    --region=eu-west-1
+    --region=us-east-1
     echo "Done"
     exit
 else
