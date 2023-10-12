@@ -53,7 +53,7 @@ jobs:
       - run:
           name: verify docker version
           command: |
-            service docker start
+            systemctl start docker.service
             docker version
       - run:
           name: Login to Docker Hub
