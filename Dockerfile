@@ -18,4 +18,4 @@ EXPOSE 80
 
 ## Step 5
 # Run app.py at container launch
-CMD ["nohup", "gunicorn", "-b", "0.0.0.0:80", "app:app"]
+CMD ["gunicorn", "-b", "0.0.0.0:80", "app:app", "--daemon"]
