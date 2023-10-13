@@ -25,7 +25,7 @@ spec:
         emptyDir: {}
       containers:
       - name: capstone
-        image: dinu17/story-generator:latest
+        image: dinu17/hello-world:latest
         imagePullPolicy: "Always"
         ports:
         - containerPort: 80
