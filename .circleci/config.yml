@@ -133,8 +133,6 @@ jobs:
             cd infrastructure/
             aws cloudformation create-stack --stack-name eks-nodes --template-body file://stacks/eks-nodes.yml --parameters file://parameters/eks-nodes.json --region=us-east-1 --capabilities CAPABILITY_NAMED_IAM
 
-      - destroy-environment
-
 workflows:
   version: 2
   default:
