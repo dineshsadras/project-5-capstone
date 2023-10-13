@@ -12,4 +12,4 @@ docker image ls | grep "hello-world"
 
 # Step 3: 
 # Run hello-world application
-docker run -p 8080:80 hello-world
+docker run -p 80:80 hello-world
