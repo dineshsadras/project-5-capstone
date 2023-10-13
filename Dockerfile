@@ -18,4 +18,4 @@ EXPOSE 80
 
 ## Step 5
 # Run app.py at container launch
-CMD ["python", "app.py"]
+CMD ["gunicorn",  "-b", "0.0.0.0:80", "app:app"]
