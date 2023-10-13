@@ -147,13 +147,13 @@ jobs:
           command: |
             curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
             chmod +x ./kubectl
-            mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$HOME/bin:$PATH
+#            mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$HOME/bin:$PATH
       - run:
           name: Deploy to Kubernetes Cluster
           command: |
             aws eks --region us-east-1 update-kubeconfig --name capstone
-            kubectl apply -f kubernetes/deployment.yml
-            kubectl apply -f kubernetes/service.yml
+            ./kubectl apply -f kubernetes/deployment.yml
+            ./kubectl apply -f kubernetes/service.yml
 
 
 workflows:
