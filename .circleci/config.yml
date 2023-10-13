@@ -155,10 +155,13 @@ workflows:
   default:
     jobs:
       - linting
+      
       - build-and-push:
           context: dockerhub
           requires: [linting]
+          
       - create-eks-cluster:
           requires: [build-and-push]
+          
       - deploy-app-to-kubernetes:
-          requires: [build-and-push]
+          requires: [create-eks-cluster]
