@@ -9,16 +9,29 @@ commands:
     description: Destroy EKS cluster if the job fails
     steps:
       - run:
-          name: Destroy environments
+          name: Destroy EKS cluster Nodes
           when: on_fail
           command: |
-            echo "Destroying EKS cluster and Network components "
+            echo "Destroying EKS cluster Nodes"
             cd infrastructure/
-            chmod u+x create-stack.sh   
+            aws cloudformation delete-stack --stack-name eks-nodes --region=us-east-1
+     
+      - run:
+          name: Destroy EKS cluster
+          when: on_fail
+          command: |
+            echo "Destroying EKS cluster"
+            cd infrastructure/
+            aws cloudformation delete-stack --stack-name eks --region=us-east-1
 
-            sh create-stack.sh delete eks-nodes
-            sh create-stack.sh delete eks
-            sh create-stack.sh delete network
+      - run:
+          name: Destroy Network Components
+          when: on_fail
+          command: |
+            echo "Destroying Network Components"
+            cd infrastructure/
+            aws cloudformation delete-stack --stack-name network --region=us-east-1
+                       
 jobs:
   build:
     docker:
@@ -104,13 +117,23 @@ jobs:
             yum install -y tar
             yum install -y gzip
       - run:
-          name: Deploy network, eks cluster and nodes
+          name: Deploy Network
           command: |
             cd infrastructure/
-            chmod u+x create-stack.sh
-            sh create-stack.sh create network
-            sh create-stack.sh create eks
-            sh create-stack.sh create eks-nodes
+            aws cloudformation create-stack --stack-name network --template-body file://stacks/network.yml --parameters file://parameters/network.json --region=us-east-1 --capabilities CAPABILITY_NAMED_IAM
+      - run:
+          name: Deploy EKS cluster
+          command: |
+            cd infrastructure/
+            aws cloudformation create-stack --stack-name eks --template-body file://stacks/eks.yml --parameters file://parameters/eks.json --region=us-east-1 --capabilities CAPABILITY_NAMED_IAM
+
+      - run:
+          name: Deploy EKS Nodes
+          command: |
+            cd infrastructure/
+            aws cloudformation create-stack --stack-name eks-nodes --template-body file://stacks/eks-nodes.yml --parameters file://parameters/eks-nodes.json --region=us-east-1 --capabilities CAPABILITY_NAMED_IAM
+
+      - destroy-environment
 
 workflows:
   version: 2
