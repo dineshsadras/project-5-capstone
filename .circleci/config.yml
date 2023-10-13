@@ -33,7 +33,7 @@ commands:
             aws cloudformation delete-stack --stack-name network --region=us-east-1
                        
 jobs:
-  build:
+  linting:
     docker:
     # Use the same Docker base as the project
       - image: python:3.7.3-stretch
@@ -106,7 +106,7 @@ jobs:
             chmod u+x upload_docker.sh
             ./upload_docker.sh
 
-  eks-cluster-nodes:
+  create-eks-cluster:
     docker:
       - image: amazon/aws-cli
     steps:
@@ -136,9 +136,29 @@ jobs:
             aws cloudformation create-stack --stack-name eks-nodes --template-body file://stacks/eks-nodes.yml --parameters file://parameters/eks-nodes.json --region=us-east-1 --capabilities CAPABILITY_NAMED_IAM
             aws cloudformation wait stack-create-complete --stack-name eks-nodes --region us-east-1
 
+  deploy-app-to-kubernetes:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Install tar and gzip
+          command: |
+            echo "Deploy to Kubernetes"
+            aws eks --region us-east-1 update-kubeconfig --name capstone
+            kubectl apply -f kubernetes/deployment.yml
+            kubectl apply -f kubernetes/service.yml
+
 
 workflows:
   version: 2
   default:
     jobs:
-      - eks-cluster-nodes
+      - linting
+      - build-and-push:
+          context: dockerhub
+          requires: [linting]
+      - create-eks-cluster:
+          requires: [build-and-push]
+      - deploy-app-to-kubernetes:
+          requires: [build-and-push]
