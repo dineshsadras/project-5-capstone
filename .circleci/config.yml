@@ -99,7 +99,7 @@ jobs:
           command: |
             chmod u+x run_docker.sh
             ./run_docker.sh
-            docker images | grep "story-generator"
+            docker images | grep "hello-world"
       - run:
           name: push docker image to docker hub
           command: |
