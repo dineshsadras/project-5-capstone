@@ -4,12 +4,12 @@
 
 # Step 1:
 # Build image and add a descriptive tag
-docker build --tag=story-generator .
+docker build --tag=hello-world .
 
 # Step 2: 
 # List docker images
-docker image ls | grep "story-generator"
+docker image ls | grep "hello-world"
 
 # Step 3: 
-# Run story-generator app
-docker run -p 8080:80 story-generator
+# Run hello-world application
+docker run -p 8080:80 hello-world
