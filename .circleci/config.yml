@@ -121,17 +121,21 @@ jobs:
           command: |
             cd infrastructure/
             aws cloudformation create-stack --stack-name network --template-body file://stacks/network.yml --parameters file://parameters/network.json --region=us-east-1 --capabilities CAPABILITY_NAMED_IAM
+            aws cloudformation wait stack-create-complete --stack-name network
       - run:
           name: Deploy EKS cluster
           command: |
             cd infrastructure/
             aws cloudformation create-stack --stack-name eks --template-body file://stacks/eks.yml --parameters file://parameters/eks.json --region=us-east-1 --capabilities CAPABILITY_NAMED_IAM
+            aws cloudformation wait stack-create-complete --stack-name eks
 
       - run:
           name: Deploy EKS Nodes
           command: |
             cd infrastructure/
             aws cloudformation create-stack --stack-name eks-nodes --template-body file://stacks/eks-nodes.yml --parameters file://parameters/eks-nodes.json --region=us-east-1 --capabilities CAPABILITY_NAMED_IAM
+            aws cloudformation wait stack-create-complete --stack-name eks-nodes
+
 
 workflows:
   version: 2
