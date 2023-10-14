@@ -23,6 +23,7 @@ commands:
             echo "Destroying EKS cluster"
             cd infrastructure/
             aws cloudformation delete-stack --stack-name eks --region=us-east-1
+
       - run:
           name: Destroy Network Components
           when: on_fail
@@ -58,6 +59,7 @@ jobs:
             # Install hadolint
             wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linux-x86_64 &&\
             chmod +x /bin/hadolint
+
       - save_cache:
           paths:
             - ./venv
@@ -69,6 +71,7 @@ jobs:
           command: |
             . venv/bin/activate
             make lint
+
   build-and-push:
     docker:
     # Use the same Docker base as the project
@@ -87,7 +90,7 @@ jobs:
       - run:
           name: Docker Version check
           command: docker version
-
+        
       - run:
           name: Login to Docker Hub
           command: echo "${DOCKERHUB_PASSWORD}" | docker login -u "${DOCKERHUB_USERNAME}" --password-stdin
@@ -102,6 +105,7 @@ jobs:
           command: |
             chmod u+x upload_docker.sh
             ./upload_docker.sh
+
   create-eks-cluster:
     docker:
       - image: amazon/aws-cli
@@ -116,20 +120,22 @@ jobs:
           name: Deploy Network
           command: |
             cd infrastructure/
-            aws cloudformation create-stack --stack-name network --template-body file://stacks/network.yml --parameters file://parameters/network.json --region=us-east-1 --capabilities CAPABILITY_NAMED_IAM
-            aws cloudformation wait stack-create-complete --stack-name network --region us-east-1
+            aws cloudformation create-stack --stack-name network-1 --template-body file://stacks/network.yml --parameters file://parameters/network.json --region=us-east-1 --capabilities CAPABILITY_NAMED_IAM
+            aws cloudformation wait stack-create-complete --stack-name network-1 --region us-east-1
       - run:
           name: Deploy EKS cluster
           command: |
             cd infrastructure/
-            aws cloudformation create-stack --stack-name eks --template-body file://stacks/eks.yml --parameters file://parameters/eks.json --region=us-east-1 --capabilities CAPABILITY_NAMED_IAM
-            aws cloudformation wait stack-create-complete --stack-name eks --region us-east-1
+            aws cloudformation create-stack --stack-name eks-1 --template-body file://stacks/eks.yml --parameters file://parameters/eks.json --region=us-east-1 --capabilities CAPABILITY_NAMED_IAM
+            aws cloudformation wait stack-create-complete --stack-name eks-1 --region us-east-1
+
       - run:
           name: Deploy EKS Nodes
           command: |
             cd infrastructure/
-            aws cloudformation create-stack --stack-name eks-nodes --template-body file://stacks/eks-nodes.yml --parameters file://parameters/eks-nodes.json --region=us-east-1 --capabilities CAPABILITY_NAMED_IAM
-            aws cloudformation wait stack-create-complete --stack-name eks-nodes --region us-east-1
+            aws cloudformation create-stack --stack-name eks-nodes-1 --template-body file://stacks/eks-nodes.yml --parameters file://parameters/eks-nodes.json --region=us-east-1 --capabilities CAPABILITY_NAMED_IAM
+            aws cloudformation wait stack-create-complete --stack-name eks-nodes-1 --region us-east-1
+
   deploy-app-to-kubernetes:
     docker:
       - image: amazon/aws-cli
@@ -148,8 +154,17 @@ jobs:
             aws eks --region us-east-1 update-kubeconfig --name capstone
             ./kubectl apply -f kubernetes/deployment.yml
             ./kubectl apply -f kubernetes/service.yml
+
+
 workflows:
   version: 2
   default:
     jobs:
-      - deploy-app-to-kubernetes
+      - linting
+      - build-and-push:
+          context: dockerhub
+          requires: [linting]
+      - create-eks-cluster:
+          requires: [build-and-push]
+      - deploy-app-to-kubernetes:
+          requires: [create-eks-cluster]
