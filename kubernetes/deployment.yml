@@ -30,5 +30,5 @@ spec:
         ports:
         - containerPort: 80
         volumeMounts:
-          - mountPath: /app/static/uploads
+          - mountPath: /
             name: uploads
