@@ -121,20 +121,20 @@ jobs:
           command: |
             cd infrastructure/
             aws cloudformation create-stack --stack-name network-1 --template-body file://stacks/network.yml --parameters file://parameters/network.json --region=us-east-1 --capabilities CAPABILITY_NAMED_IAM
-            aws cloudformation wait stack-create-complete --stack-name network-1 --region us-east-1
+            aws cloudformation wait stack-create-complete --stack-name network --region us-east-1
       - run:
           name: Deploy EKS cluster
           command: |
             cd infrastructure/
             aws cloudformation create-stack --stack-name eks-1 --template-body file://stacks/eks.yml --parameters file://parameters/eks.json --region=us-east-1 --capabilities CAPABILITY_NAMED_IAM
-            aws cloudformation wait stack-create-complete --stack-name eks-1 --region us-east-1
+            aws cloudformation wait stack-create-complete --stack-name eks --region us-east-1
 
       - run:
           name: Deploy EKS Nodes
           command: |
             cd infrastructure/
             aws cloudformation create-stack --stack-name eks-nodes-1 --template-body file://stacks/eks-nodes.yml --parameters file://parameters/eks-nodes.json --region=us-east-1 --capabilities CAPABILITY_NAMED_IAM
-            aws cloudformation wait stack-create-complete --stack-name eks-nodes-1 --region us-east-1
+            aws cloudformation wait stack-create-complete --stack-name eks-nodes --region us-east-1
 
   deploy-app-to-kubernetes:
     docker:
