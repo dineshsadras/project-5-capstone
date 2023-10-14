@@ -168,3 +168,4 @@ workflows:
           requires: [build-and-push]
       - deploy-app-to-kubernetes:
           requires: [create-eks-cluster]
+          
