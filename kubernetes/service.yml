@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: capstone
+  name: capstone-new
 spec:
-  selector:
-    app: capstone
-  type: LoadBalancer
+  type: NodePort
   ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 80
+    - port: 80
+      targetPort: 80
+      nodePort: 30000
+  selector:
+    app: capstone-new
