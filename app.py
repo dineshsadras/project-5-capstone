@@ -6,3 +6,5 @@ app = Flask(__name__)
 def index():
     return 'Hello World, My name is Dinesh Kumar SG. This is for Udacity project 5 - Capstone'
 
+app.run(host='0.0.0.0', port=80)
+
