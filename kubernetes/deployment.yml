@@ -1,13 +1,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: udacity-capstone
+  name: udacity-capstone-new
   labels:
-    app: capstone
+    app: capstone-new
 spec:
   selector:
     matchLabels:
-      app: capstone
+      app: capstone-new
   replicas: 2
   strategy:
     type: RollingUpdate
@@ -17,10 +17,10 @@ spec:
   template:
     metadata:
       labels:
-        app: capstone
+        app: capstone-new
     spec:
       containers:
-      - name: capstone
+      - name: capstone-new
         image: dinu17/hello-world:latest
         imagePullPolicy: "Always"
         ports:
