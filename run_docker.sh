@@ -10,6 +10,3 @@ docker build --tag=hello-world .
 # List docker images
 docker image ls | grep "hello-world"
 
-# Step 3: 
-# Run hello-world application
-docker run -p 80:80 hello-world
